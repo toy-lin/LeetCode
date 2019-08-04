@@ -1,25 +1,10 @@
 package main
 
 import (
+	"LeetCode/kth_largest_ele_in_an_array"
 	"fmt"
-	"reflect"
 )
 
 func main() {
-	s := "()[]{}"
-	var a interface{}
-	for i, c := range s {
-		fmt.Println(i, c, reflect.TypeOf(c))
-		a = c
-	}
-	switch a.(type) {
-	case string:
-		fmt.Println("string")
-	case int:
-		fmt.Println("int")
-	case int32:
-		fmt.Println("int32")
-	default:
-		fmt.Println("default")
-	}
+	fmt.Println(kth_largest_ele_in_an_array.FindKthLargest([]int{1, 2, 3, 4, 5}, 2))
 }
