@@ -2,7 +2,7 @@ package kth_largest_ele_in_an_array
 
 import "sort"
 
-func FindKthLargest(nums []int, k int) int {
+func findKthLargest(nums []int, k int) int {
 	if len(nums) == 0 || k > len(nums) {
 		return 0
 	}
