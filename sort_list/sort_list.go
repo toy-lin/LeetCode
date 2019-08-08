@@ -29,6 +29,8 @@ func sortList(head *ListNode) *ListNode {
 		n++
 	}
 	var tail = head
+	var newHead *ListNode
+	var newTail *ListNode
 	var h1 *ListNode
 	var h2 *ListNode
 	var headCmp *ListNode
@@ -45,20 +47,42 @@ func sortList(head *ListNode) *ListNode {
 			if h2.Next != nil {
 				h2 = h2.Next
 			}
-
 			if i != eleListLen-1 {
 				headCmp = headCmp.Next
 			} else {
 				headCmp.Next = nil
 			}
 		}
-		tail = h2.Next
-		h2.Next = nil
+		if h1 == h2 {
+			eleListLen *= 2
+			tail = newHead
+			head = newHead
+			newHead = nil
+			continue
+		}
+		tail = h2
+		for i := 0; i < eleListLen; i++ {
+			tail = tail.Next
+		}
+		tail.Next = nil
 
 		headCmp, last = merge2Lists(h1, h2)
-		headCmp.Next = tail
+		if newHead == nil {
+			newHead = headCmp
+			newTail = last
+		} else {
+			newTail.Next = headCmp
+		}
+		newTail = last
 
-		eleListLen *= 2
+		if tail == nil { // hit the tail
+			eleListLen *= 2
+			tail = newHead
+			head = newHead
+			newHead = nil
+			continue
+		}
+		last.Next = tail
 	}
 
 	return head
