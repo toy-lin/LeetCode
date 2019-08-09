@@ -28,63 +28,64 @@ func sortList(head *ListNode) *ListNode {
 	for h := head; h != nil; h = h.Next {
 		n++
 	}
-	var tail = head
-	var newHead *ListNode
-	var newTail *ListNode
 	var h1 *ListNode
 	var h2 *ListNode
-	var headCmp *ListNode
-	var eleListLen = 1
-	var last *ListNode
+	var blockLen = 1
+	var cmpPre *ListNode
+	var cmpPost *ListNode
+	var cutAssist *ListNode
 	for {
-		if eleListLen >= n {
+		// 1
+		if blockLen >= n {
 			break
 		}
-		headCmp = tail
-		h1 = tail
-		h2 = tail
-		for i := 0; i < eleListLen; i++ {
-			if h2.Next != nil {
-				h2 = h2.Next
-			}
-			if i != eleListLen-1 {
-				headCmp = headCmp.Next
-			} else {
-				headCmp.Next = nil
-			}
-		}
-		if h1 == h2 {
-			eleListLen *= 2
-			tail = newHead
-			head = newHead
-			newHead = nil
-			continue
-		}
-		tail = h2
-		for i := 0; i < eleListLen; i++ {
-			tail = tail.Next
-		}
-		tail.Next = nil
-
-		headCmp, last = merge2Lists(h1, h2)
-		if newHead == nil {
-			newHead = headCmp
-			newTail = last
+		// 2
+		if cmpPre == nil {
+			h1 = head
 		} else {
-			newTail.Next = headCmp
+			h1 = cmpPre.Next
 		}
-		newTail = last
+		h2 = h1
+		cutAssist = h1
+		for i := 0; i < blockLen; i++ {
+			if h2 != nil {
+				h2 = h2.Next
 
-		if tail == nil { // hit the tail
-			eleListLen *= 2
-			tail = newHead
-			head = newHead
-			newHead = nil
-			continue
+				if i == blockLen-1 {
+					cutAssist.Next = nil
+				} else {
+					cutAssist = cutAssist.Next
+				}
+			}
 		}
-		last.Next = tail
+		cmpPost = h2
+		cutAssist = h2
+		for i := 0; i < blockLen; i++ {
+			if cmpPost != nil {
+				cmpPost = cmpPost.Next
+				if i == blockLen-1 {
+					cutAssist.Next = nil
+				} else {
+					cutAssist = cutAssist.Next
+				}
+			}
+		}
+		// 4
+		h1, h2 = merge2Lists(h1, h2)
+		// 5
+		if cmpPre == nil {
+			head = h1
+		} else {
+			cmpPre.Next = h1
+		}
+		cmpPre = h2
+		h2.Next = cmpPost
+
+		if cmpPost == nil {
+			blockLen *= 2
+			cmpPre = nil
+		}
 	}
-
 	return head
 }
 
