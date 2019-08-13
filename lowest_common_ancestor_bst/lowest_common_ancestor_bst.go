@@ -36,7 +36,29 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-var ancestor *TreeNode
+//题解：采用前序遍历。并利用二叉树的特性，判断是否要继续往下找。
+//最坏情况下要遍历所有节点，时间复杂度O(n)
+//最坏情况下（树像链表一样）空间复杂度为O(n)
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil || root == q || root == p {
+		return root
+	}
+	var l *TreeNode
+	if root.Val > p.Val || root.Val > q.Val { //两个节点中有一个值比当前节点小，才有搜索左子树的必要
+		l = lowestCommonAncestor(root.Left, p, q)
+	}
+	var r *TreeNode
+	if root.Val < p.Val || root.Val < q.Val { //两个节点中有一个值比当前节点大，才有搜索右子树的必要
+		r = lowestCommonAncestor(root.Right, p, q)
+	}
+	if l != nil && r != nil {
+		return root
+	} else if l != nil {
+		return l
+	} else {
+		return r
+	}
+}
 
 //题解：可以采用后续遍历的方法。步骤如下：
 //1.遍历左子树，返回匹配节点的数量。
@@ -44,31 +66,32 @@ var ancestor *TreeNode
 //3.如果左右子树各有1个匹配，则当前节点就是最近的祖先节点。
 //4.如果左右子树只有1个匹配，查看当前节点是否匹配，若匹配则当前节点是最近的祖先节点。
 //5.返回当前节点接收到的匹配总数。
-func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-	ancestor = nil
-	lrd(root, p, q)
-	return ancestor
-}
-
-func lrd(node, p, q *TreeNode) (matchCount int) {
-	if node == nil {
-		return
-	}
-	matchLeft := lrd(node.Left, p, q)
-	matchRight := lrd(node.Right, p, q)
-	if matchLeft == 2 || matchRight == 2 {
-		return 2
-	}
-	if matchLeft == 1 && matchRight == 1 {
-		ancestor = node
-		return 2
-	}
-	if node == p || node == q {
-		if matchLeft == 1 || matchRight == 1 {
-			ancestor = node
-			return 2
-		}
-		return 1
-	}
-	return matchLeft + matchRight
-}
+//var ancestor *TreeNode
+//func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+//	ancestor = nil
+//	lrd(root, p, q)
+//	return ancestor
+//}
+//
+//func lrd(node, p, q *TreeNode) (matchCount int) {
+//	if node == nil {
+//		return
+//	}
+//	matchLeft := lrd(node.Left, p, q)
+//	matchRight := lrd(node.Right, p, q)
+//	if matchLeft == 2 || matchRight == 2 {
+//		return 2
+//	}
+//	if matchLeft == 1 && matchRight == 1 {
+//		ancestor = node
+//		return 2
+//	}
+//	if node == p || node == q {
+//		if matchLeft == 1 || matchRight == 1 {
+//			ancestor = node
+//			return 2
+//		}
+//		return 1
+//	}
+//	return matchLeft + matchRight
+//}
