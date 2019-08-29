@@ -38,37 +38,16 @@ func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 		}
 		return float64(nums2[midN]+nums2[midN+1]) / 2
 	}
-	//if n == 0 {
-	//	if m%2 == 1 {
-	//		return float64(nums1[midM])
-	//	}
-	//	return float64(nums1[midM]+nums1[midM+1]) / 2
-	//}
 
-	if m == 1 && n == 1 {
-		return float64(nums1[0]+nums2[0]) / 2
-	}
-
-	var nums []int
-	var mid int
-	var num int
-	var numsLen int
 	if m == 1 {
-		nums = nums2
-		numsLen = n
-		mid = midN
-		num = nums1[0]
-	} else if n == 1 {
-		nums = nums1
-		numsLen = m
-		mid = midM
-		num = nums2[0]
-	}
-	if nums != nil {
-		if numsLen%2 == 1 {
-			var nMid = nums[mid]
-			var nLeft = nums[mid-1]
-			var nRight = nums[mid+1]
+		var num = nums1[0]
+		if n == 1 {
+			return float64(num+nums2[0]) / 2
+		}
+		if n%2 == 1 {
+			var nMid = nums2[midN]
+			var nLeft = nums2[midN-1]
+			var nRight = nums2[midN+1]
 			if num < nLeft {
 				return float64(nLeft+nMid) / 2
 			}
@@ -77,8 +56,8 @@ func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 			}
 			return float64(nMid+num) / 2
 		}
-		var nLeft = nums[mid]
-		var nRight = nums[mid+1]
+		var nLeft = nums2[midN]
+		var nRight = nums2[midN+1]
 		if num < nLeft {
 			return float64(nLeft)
 		}
@@ -166,12 +145,8 @@ func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 		return float64(oLeft+oRight) / 2
 	}
 
-	mid = midM
-	if midN < mid {
-		mid = midN
-	}
 	if nums1[midM] < nums2[midN] {
-		return findMedianSortedArrays(nums1[mid:], nums2[:n-mid])
+		return findMedianSortedArrays(nums1[midM:], nums2[:n-midM])
 	}
-	return findMedianSortedArrays(nums2[mid:], nums1[:m-mid])
+	return findMedianSortedArrays(nums2[midM:], nums1[:m-midM])
 }
