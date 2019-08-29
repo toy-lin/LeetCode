@@ -1,5 +1,7 @@
 package midian_two_sorted_arrays
 
+import "sort"
+
 //给定两个大小为 m 和 n 的有序数组 nums1 和 nums2。
 //
 //请你找出这两个有序数组的中位数，并且要求算法的时间复杂度为 O(log(m + n))。
@@ -32,117 +34,37 @@ func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 	var midM = (m - 1) / 2
 	var midN = (n - 1) / 2
 
-	if m == 0 {
+	if m == 0 { // 边界条件
 		if n%2 == 1 {
 			return float64(nums2[midN])
 		}
 		return float64(nums2[midN]+nums2[midN+1]) / 2
 	}
 
-	if m == 1 {
-		var num = nums1[0]
-		if n == 1 {
-			return float64(num+nums2[0]) / 2
-		}
-		if n%2 == 1 {
-			var nMid = nums2[midN]
-			var nLeft = nums2[midN-1]
-			var nRight = nums2[midN+1]
-			if num < nLeft {
-				return float64(nLeft+nMid) / 2
+	if m == 1 || m == 2 { // 边界条件
+		if n < 3 { // n小于3的情况下，取nums2所有元素和nums1的元素进行排序
+			for i := 0; i < n; i++ {
+				nums1 = append(nums1, nums2[i])
 			}
-			if num > nRight {
-				return float64(nRight+nMid) / 2
+		} else if n%2 == 1 { // n大于2且为奇数的情况下，取nums2中间3位和nums1的元素进行排序
+			for i := midN - 1; i < midN+2; i++ {
+				nums1 = append(nums1, nums2[i])
 			}
-			return float64(nMid+num) / 2
+		} else { // 其他情况下，取nums2的中间4位和nums1的元素进行排序
+			for i := midN - 1; i < midN+3; i++ {
+				nums1 = append(nums1, nums2[i])
+			}
 		}
-		var nLeft = nums2[midN]
-		var nRight = nums2[midN+1]
-		if num < nLeft {
-			return float64(nLeft)
-		}
-		if num > nRight {
-			return float64(nRight)
-		}
-		return float64(num)
-	}
+		sort.Ints(nums1)
+		m = len(nums1)
+		midM = (m - 1) / 2
 
-	if m == 2 {
-		if n%2 == 1 {
-			var nMid = nums2[midN]
-			var nLeft = nums2[midN-1]
-			var nRight = nums2[midN+1]
-			if nums1[0] > nRight {
-				return float64(nRight)
-			}
-			if nums1[1] < nLeft {
-				return float64(nLeft)
-			}
-			if nums1[0] > nMid {
-				return float64(nums1[0])
-			}
-			if nums1[1] < nMid {
-				return float64(nums1[1])
-			}
-			return float64(nMid)
+		// 递到头了，开始归
+		if len(nums1)%2 == 1 {
+			return float64(nums1[midM])
+		} else {
+			return float64(nums1[midM]+nums1[midM+1]) / 2
 		}
-		if n == 2 {
-			var nLeft = nums2[midN]
-			var nRight = nums2[midN+1]
-			if nums1[0] > nRight {
-				return float64(nRight+nums1[0]) / 2
-			}
-			if nums1[1] < nLeft {
-				return float64(nLeft+nums1[1]) / 2
-			}
-			var r = nums1[1]
-			if r > nRight {
-				r = nRight
-			}
-			var l = nums1[0]
-			if l < nLeft {
-				l = nLeft
-			}
-			return float64(l+r) / 2
-		}
-		var nLeftL = nums2[midN-1]
-		var nLeft = nums2[midN]
-		var nRight = nums2[midN+1]
-		var nRightR = nums2[midN+2]
-
-		if nums1[0] > nRightR {
-			return float64(nRight+nRightR) / 2
-		}
-		if nums1[1] < nLeftL {
-			return float64(nLeftL+nLeft) / 2
-		}
-		if nums1[0] < nLeftL {
-			var o = nums1[1]
-			if o > nRight {
-				o = nRight
-			} else if o < nLeftL {
-				o = nLeftL
-			}
-			return float64(nLeft+o) / 2
-		}
-		if nums1[1] > nRightR {
-			var o = nums1[0]
-			if o > nRightR {
-				o = nRightR
-			} else if o < nLeft {
-				o = nLeft
-			}
-			return float64(nRight+o) / 2
-		}
-		var oLeft = nums1[0]
-		var oRight = nums1[1]
-		if oLeft < nLeft {
-			oLeft = nLeft
-		}
-		if oRight > nRight {
-			oRight = nRight
-		}
-		return float64(oLeft+oRight) / 2
 	}
 
 	if nums1[midM] < nums2[midN] {
